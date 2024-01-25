@@ -1,6 +1,6 @@
 # Getting started with Git and GitHub
 
-D. Candela 1/24/24 (incomplete draft)
+D. Candela 1/25/24
 
 - [Introduction](#intro)
   - [What is this?](#whatis)
@@ -33,8 +33,6 @@ D. Candela 1/24/24 (incomplete draft)
   - [Small groups with differing roles](#differing)
   - [Appendix A: Markdown](#markdown)
   - [Appendix B: Using GH to develop and distribute a simple Python package](#pythonpackage)
-
-[TODO moderately complete - sections still to be filled out marked with TODO like this.  Also needs proofing and wordiness reduction]
 
 ## Introduction <a id="intro"></a>
 
@@ -151,7 +149,8 @@ The most basic concept in Git is the **commit**, which is a **saved snapshot of 
 - Amazingly Git **saves the complete history** of commits since the repo was first created. In other words, Git doesn't just save your files -- it saves **every version of each of your files that occurred in any commit (snapshot of the repo)** . You easily can re-create your files exactly as they existed at any past commit.
 - If you think of your repo as a book, doing a commit adds a new page to the book with current information on the complete contents of your files on that page -- but it doesn't affect the earlier pages (earlier commits), which are still there.
 - Where are all these commits kept? They are in the `.git` directory mentioned above. Also amazingly **the complete history is saved on every system** (PC, laptop...) that uses the repo, not just on a server like GH.  In the unlikely event that all of GH's storage servers were to fail, the complete history of your repo is still safe and sound on your laptop.
-- If you created a GH repo as in the previous section, you can **see this in action:**
+- If you created a GH repo as in the previous section, you can **see this in action** in the **GH web page for your repo:**
+  - If you are not already there, click on the **name of your repo** (e.g. in "Your repositories" after clicking your avatar) and make sure the **Code** tab is selected at the upper left.  This is the default view of a repo in GH, with a list of your repo files followed by the contents of your README file, if any.
   - The commit you are currently using (typically the most recent one) is listed on the line above your files. Every commit is labeled by a unique [**SHA code**](https://en.wikipedia.org/wiki/SHA-1) like `77ba2b6` or `bc90c1d` that you see listed in this line -- the full SHA code is 40 characters long, but it usually suffices to use the first few characters like this.  You should think of the SHA as the **name of the commit** which serves to distinguish it uniquely from all other commits (ever made, by anyone, to any repo).
   - Click the **history** dingus in this line (little clock with an arrow around it) to see a list of all the earlier commits.
   - Click any earlier commit to **revert your files** to that earlier state -- this brings you a "diff page" showing how the commit differed from the previous commit, just hit **Browse files** to get the familiar file view.
@@ -354,7 +353,7 @@ In the practice exercise suggested above, the changes proposed for a pull reques
   
   - **Fetch origin** to retrieve the current state of the remote repo (origin), then
   
-  - **Pull again**  to merge the retrieved remote state into the corresponding local branches.  [TODO - SOMETIMES SEEMS DONE AUTOMATICALLY??]
+  - **Pull again**  to merge the retrieved remote state into the corresponding local branches.
     
     It is valuable to update your local repo in this way before creating and starting to work on a new branch, so you are starting with the current state of the remote repo.
 
@@ -905,8 +904,6 @@ In this collaborative workflow (unlike the simpler workflows 1 and 2 discussed a
   ```
   
   This is called **publishing the feature branch** (on GHDT, for example) as it makes it visible and available for pulling, pushing, and merging to you and the rest of the collaborators.  As shown here the branch to be pushed must be specifically given (or use `git push --all origin ` to push all local branches).  The intent is that a collaborator's feature branch will not be published to GH until they intentionally do so.
-  
-  [TODO - set to track remote branch??  happens automatically?]
 
 - Whoever developed and pushed the feature branch will want to **tell other collaborators about it** by **opening a pull request (PR)**, which is a suggestion to the group that `feat23` should be merged into `main` (or another specified branch).  The following steps are available in the GH website for the collaborator who pushed the `feat23` branch:
   
@@ -920,25 +917,21 @@ In this collaborative workflow (unlike the simpler workflows 1 and 2 discussed a
   
   - With the description and other info complete, they should hit **Create pull request**.
   
-  - If the collaborator wants to push your branch `feat23` to GH when it is very incomplete e.g. just to back it up, they could push it but hold off opening a PR until it is closer to finished. But all collaborators will see and be able to edit the branch as soon as it is pushed. It's probably better to open the PR right away as **draft PR**, which is an option under the "Create pull request" tab, and/or to start the description with WIP (work in progress) or something similar. (For free GH accounts, draft PRs are only available for public repos.)  Draft PRs cannot be merged until they are marked "Ready for review", and then a collaborator assigned as a reviewer will need to submit an approving review (this is done under the "Files changed" tab of the PR). [TODO always true, or just because I set this?]
+  - If the collaborator wants to push your branch `feat23` to GH when it is very incomplete e.g. just to back it up, they could push it but hold off opening a PR until it is closer to finished. But all collaborators will see and be able to edit the branch as soon as it is pushed. It's probably better to open the PR right away as **draft PR**, which is an option under the "Create pull request" tab, and/or to start the description with WIP (work in progress) or something similar. (For free GH accounts, draft PRs are only available for public repos.)  Draft PRs cannot be merged until they are marked "Ready for review", and then a collaborator assigned as a reviewer will need to submit an approving review (this is done under the "Files changed" tab of the PR). 
 
 - **Working on a PR before it is merged.**
   
-  - **Other collaborators work on the feature branch** [TODO how do others and pusher track the new branch on GH?]
+  - **Other collaborators work on the feature branch**
   
   - **Updating a feature branch so it can be merged automatically.**  If the pushed branch `feat23` can be merged without conflicts, a green **This branch has no conflicts with the base branch** and a green **Merge pull request** button will be displayed when the GH screen for the PR.  Often it is the responsibility of whoever initiated the pull request to **update and re-push their feature branch** so it can merged without conflicts.
-
-- **Merging a PR**
-  
-  - T [TODO finish or is this needed]
 
 ### Aside: Rebasing and squashing<a id="rebasing"></a>
 
 In general Git keeps your entire commit history, branches and all (unless you delete an unmerged branch).  Here, however, are two techniques that **modify the commit history** and cause **existing commits to be permanently discarded** -- but not the information of value in those commits, if done correctly. 
 
-One basic rule seems to be to **never rebase or squash published branches** (branches that have been pushed to GH so your collaborators can work on them) -- you might eliminate commits they are using, causing [a bit of a tangle](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
+One basic rule seems to be to **never rebase or squash published branches** (branches that have been pushed to GH so your collaborators can work on them) -- you might eliminate commits they are using, causing [a bit of a tangle](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).  If you do want to push branch that was previous pushed and now has been rebased or squashed you will need to use `git push --force` which is Git's way of saying you are doing something dangerous.
 
-If you are working in a collaboration, the use of of rebasing and squashing will likely be dictated by policies and practices of the collaboration -- you may have noticed that closing pull requests with a rebase or a squash rather than a merge are options offered in GH.
+If you are working in a collaboration, the use of of rebasing and squashing will likely be dictated by the practices of the collaboration -- you may have noticed that closing pull requests with a rebase or a squash rather than a merge are options offered in GH.
 
 - [**Rebasing**](https://git-scm.com/book/en/v2/Git-Branching-Rebasing) replaces a divergent branched history with a simpler, linear history.  So, for example, if the feature branch `feat` you are working on does not merge in cleanly with `main`, one option as explained above is to update `feat` by merging an up-to-date fetch of `main` into the `feat`.  Your updated `feat` can then be merged cleanly into `main`, and after that is done `main` will have a complicated history showing the earlier merge of `main` into `feat`. 
   
@@ -1146,7 +1139,7 @@ See  the section "Contributing to open-source projects" above for resources and 
 
 - Open a pull request on GH.  By default your pull request will be to merge your branch into `main` of the **original repo**, not your fork, and ideally this should start a conversation or a review as in the [example here](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project), leading eventually to your changes being accepted and merged, or rejected (PR closed without merging).
 
-- If the original project progresses while your PR is open, you may need to update your branch by merging in the `main` branch of the **original repo**, which will abbreviated as `upstream` (rather than `origin`, which refers to your fork).  Unless you cloned your fork using GHDT (which does this automatically) you should to set `upstream` to point to the original repo (see "Keeping up with Upstream" in [this section](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project) of the Git Book): [TODO paste example of remote -v output]
+- If the original project progresses while your PR is open, you may need to update your branch by merging in the `main` branch of the **original repo**, which will abbreviated as `upstream` (rather than `origin`, which refers to your fork).  Unless you cloned your fork using GHDT (which does this automatically) you should to set `upstream` to point to the original repo (see "Keeping up with Upstream" in [this section](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project) of the Git Book):
   
   ```
   $ git remote add upstream <HTTP or SSH address of original repo>
@@ -1205,10 +1198,6 @@ Here is a [Cheat Sheet](https://www.markdownguide.org/cheat-sheet/), and here is
 - [**MyST**](https://mystmd.org/guide/), an extension of Markdown intended to have the functionality of reStructuredText while retaining more compatibility with Markdown.
 - [**LaTex**](https://www.latex-project.org/), a document (or page) oriented markup language used particularly to format mathematical material such as complicated equations.
   Rather than using the full LatTex markup language, Markdown renderers are usually set up so Latex commands can be embedded in Markdown files to show mathematical material. Thus  `$\alpha = e^\pi$` in a Markdown file can be displayed in a browser as $\alpha = e^\pi$.
-
-**Generating documentation for your project.**
-
-[TODO WORKING HERE]
 
 ## Appendix B: Using GH to develop and distribute a simple Python package<a id="pythonpackage"></a>
 
