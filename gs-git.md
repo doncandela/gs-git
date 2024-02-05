@@ -542,6 +542,12 @@ where `<address>` is the HTTPS or SSH address of your repo copied and pasted fro
     origin    https://github.com/<username>/myrepo.git (fetch)
     origin    https://github.com/<username>/myrepo.git (push)
 
+- Git commands that don't refer to specific files or directories will have the same result if issued in the top directory of your repo, or in any of its sub- or sub-sub directories.  These include `git branch -vv`, `git fetch`, `git pull` (all covered below) and many others.
+
+- `git add .` (covered below) will stage all files **in the current directory and its subdirectories**.
+
+- `git status` (covered below) will show the status of all files in the repo, no matter where it is issued. Conversely `git status .` will show the status of files in the current directory and its subdirectories. 
+
 **A single repo on GH can be cloned to more than one laptop/PC**, for example if you have collaborators (who will each want to clone the repo to their laptop/PC) or if you want to be able to work on the repo from more than one laptop/PC (one at work and one at home).
 
 ### Seeing branches and their commit history<a id="seebranches"></a>
@@ -1203,18 +1209,19 @@ Here is a [Cheat Sheet](https://www.markdownguide.org/cheat-sheet/), and here is
 
 Say you have written some Python modules `mymod1.py`, `mymod2.py` that you would like to make into an **installable package** called `mypackage`, so they can be imported by a Python program sitting anywhere on your laptop/PC -- rather than needing to be in the same directory where you import them.
 
-Here is one simple way you could set up a GH repo for the project of developing, distributing, and maintaining your package:
+Here is one simple way you can set up a GH repo for developing, distributing, and maintaining your package:
 
 ```
 myrepo/
     README.md
     LICENSE
     .gitignore
-    mypackage/
-        mymod1.py
-        mymod2.py
+    src/
+        mypackage/
+            mymod1.py
+            mymod2.py
     doc/
-        (put detailed documentation here)
+        (put documentation here)
     tests/
         (put test code here)
     setup.py
@@ -1224,9 +1231,10 @@ where `setup.py` contains
 
 ```
 from setuptools import setup
-setup(name='mypackage',
-    version='0.0'             # or higher version as desired
-    packages=['mypackage'])   # can list more than one package if desired
+setup(name='mypackagename',
+      version='0.0'             # or higher version as desired
+      package_dir = {'':'src'}, # where to find the packages
+      packages=['mypackage'])   # can list more than one package
 ```
 
 **To develop and maintain your package** you would clone it somewhere, in which case you would get the whole repo history in a `.git` subdirectory. Conversely to simply **use your package** someone could use the **<> Code** tab to download a ZIP of the latest (or another tagged) version, which would not include the repo history. Or they could **fork** your repo to develop it further themselves.
@@ -1248,9 +1256,33 @@ Because `-e` (editable) was used with `pip`, the package files can be freely edi
 
 For the simple setup discussed here `doc/` would contain an "instruction manual" listing other packages that must be installed for your package to work, while `tests/` would contain some Python programs that could be run to check that it is successfully installed. More sophisticated developers (than me) will know how to set things up so package dependencies are automatically installed and tests are automatically run.
 
+**Naming things.** In the example shown above, there are three different names for your work: `myrepo`, `mypackage`, and `mypackagename`. In practice these are often all the same; they are different in the example to explain how they get used:
+
+- `mypackage` in the example is **the name of a directory containing Python modules (`.py` files)** -- this is what Python considers to be a "package" and this is **what you use in Python `import` statements**.
+
+- `mypackagename` in the example is **the value of the argument `name` to `setuptools.setup`**. This is **the name under which Pip will install your package**.  It is logical (and simplest) to make this the same as the import name of your package -- in other words to write `setup(name='mypackage...)` unlike the example above.  If you publish your package on [PyPi](https://pypi.org/), this Pip name will need to be different from the names of all other published packages.
+
+- `myrepo` in the example is the **name of your GH repo**.  As with the Pip name, you may want to make your repo name the same as the import name `mypackage`, so you and others can find your repo on GH.  A fine point:
+  
+  - In the example, the Python packages were put in the subdirectory `src` (which is one of the standard places to put them) and `setup(package_dir = {'':'src'},...)` tells `setup` to look there to find your packages.
+  
+  - You can also put your package directories like `mypackage` directly in the top directory, rather than other `src`.  But if you do this and you call your repo `mypackage` (rather than `myrepo` as in the example), then you will find yourself doing things like
+    
+    ```
+    somewhere/mypackage/mypackage$ vim mymod1.py   # edit a module
+    ```
+    
+    I think directly repeated subdirectories in a path like this are confusing and irritating, but you may not mind.   If you put your packages under `src` (better, I think) this becomes
+    
+    ```
+    somewhere/mypackage/src/mypackage$ vim mymod1.py
+    ```
+    
+    Now, whenever you see `src` in the path you know you are dealing with your package files.
+
 **Things not discussed** (because beyond my expertise).
 
-- This was copied and simplified from [this article](https://docs.python-guide.org/writing/structure/) which discusses lots of stuff I don't know about like pip requirements files, Makefile's and automatic test suites.
+- The example above was copied and simplified from [this article](https://docs.python-guide.org/writing/structure/) which discusses lots of stuff I don't know about like pip requirements files, Makefile's and automatic test suites.
 
 - There seems to be a newer way of doing things using [Poetry](https://python-poetry.org/) to manage package dependency (rather than Conda) and a file called [pyproject.toml](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) to control the setup process.
 
