@@ -33,17 +33,27 @@ TODO's extracted from 1/24/24 version of main document, and other to-do's:
 - [Part 2: Using Git in the CLI with GitHub](#cli)
   
   - [The CLI in different operating systems](#clios)
+  
   - [Install Git on your laptop/PC and set to authenticate](#installgit)
+  
   - [Get a remote repo with local clone(s)](#getremote)
+  
   - [Seeing branches and their commit history](#seebranches)
+  
   - [Some typical Git workflows, from simple to more complex](#workflows)
+  
   - [1. A simple one-person, one-branch Git workflow](#oneperson)
+  
   - [2. All about merging: Fast forwarding, divergent history, conflicts](#merging)
+  
   - [3. A collaborative workflow: Feature branches and pull requests](#feature)
+    
     - This is called **publishing the feature branch** (on GHDT, for example) as it makes it visible and available for pulling, pushing, and merging to you and the rest of the collaborators. As shown here the branch to be pushed must be specifically given (or use `git push --all origin` to push all local branches). The intent is that a collaborator's feature branch will not be published to GH until they intentionally do so.
       
       [TODO - set to track remote branch?? happens automatically?]
+    
     - If the collaborator wants to push your branch `feat23` to GH when it is very incomplete e.g. just to back it up, they could push it but hold off opening a PR until it is closer to finished. But all collaborators will see and be able to edit the branch as soon as it is pushed. It's probably better to open the PR right away as **draft PR**, which is an option under the "Create pull request" tab, and/or to start the description with WIP (work in progress) or something similar. (For free GH accounts, draft PRs are only available for public repos.) Draft PRs cannot be merged until they are marked "Ready for review", and then a collaborator assigned as a reviewer will need to submit an approving review (this is done under the "Files changed" tab of the PR). [TODO always true, or just because I set this?]
+    
     - - Working on a PR before it is merged.**
         
         - **Other collaborators work on the feature branch** [TODO how do others and pusher track the new branch on GH?]
@@ -52,13 +62,20 @@ TODO's extracted from 1/24/24 version of main document, and other to-do's:
       
       - **Merging a PR**
         
-        -  [TODO write or is this section needed?]
+        - [TODO write or is this section needed?]
+  
   - [Aside: Rebasing and squashing](#rebasing)
+  
   - [4. Open-source workflow (briefly)](#opensourceflow)
+  
   - [Small groups with differing roles](#differing)
+  
   - [Appendix A: Markdown](#markdown)
+    
     - **Generating documentation for your project.**
       
       [TODO Could write this section -- maybe too much for this handout?]
+    
     - to-do Perhaps show manual TOC generation, mention auto toc apps exist.
+  
   - [Appendix B: Using GH to develop and distribute a simple Python package](#pythonpackage)

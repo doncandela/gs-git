@@ -1,6 +1,6 @@
 # Getting started with Git and GitHub
 
-D. Candela 2/11/24
+D. Candela 1/17/25
 
 - [Introduction](#intro)
   - [What is this?](#whatis)
@@ -1216,7 +1216,7 @@ Say you have written some Python modules `mymod1.py`, `mymod2.py` that you would
 Here is one simple way you can set up a GH repo for developing, distributing, and maintaining your package:
 
 ```
-myrepo/
+mypackage/
     README.md
     LICENSE
     .gitignore
@@ -1229,60 +1229,89 @@ myrepo/
     tests/
         (put test code here)
     setup.py
+    pyproject.toml
 ```
 
 where `setup.py` contains
 
 ```
 from setuptools import setup
-setup(name='mypackagename',
+setup(name='mypackage',
       version='0.0'             # or higher version as desired
       package_dir = {'':'src'}, # where to find the packages
       packages=['mypackage'])   # can list more than one package
 ```
 
-**To develop and maintain your package** you would clone it somewhere, in which case you would get the whole repo history in a `.git` subdirectory. Conversely to simply **use your package** someone could use the **<> Code** tab to download a ZIP of the latest (or another tagged) version, which would not include the repo history. Or they could **fork** your repo to develop it further themselves.
-
-After cloning or extracting from a ZIP file, this package can be **installed** (into the current Conda environment, if any) by going to `myrepo` and doing
+and `pyproject.toml` contains
 
 ```
-(myenv)../myrepo$ pip install -e .
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+```
+
+(Until recently `pyproject.toml` was optional but now it is more or less required, see [this discussion](https://packaging.python.org/en/latest/guides/modernize-setup-py-project/) from the Python folks.  Too start, you can use the same minimal `pyproject.toml` shown above for all your projects.)
+
+**To develop and maintain your package** you would clone it somewhere, in which case you would get the whole repo history in a `.git` subdirectory. Conversely to simply **use your package** someone could use the **<> Code** tab to download a ZIP of the latest (or another tagged) version, which would not include the repo history. Or they could **fork** your repo to develop it further themselves.
+
+After cloning or extracting from a ZIP file, this package can be **installed** (into the current Conda environment, if any) by going to the top directory `mpackage` (the one that includes `setup.py` and `pyproject.toml`) and doing
+
+```
+(myenv)../mypackage$ pip install -e .
 ```
 
 Now (running from any directory, but in this environment) your Python code can do things like
+
+```
+import mypackage.mymod1
+mymod1.myfunc()
+```
+
+or
 
 ```
 from mypackage import mymod1
 mymod1.myfunc()
 ```
 
-Because `-e` (editable) was used with `pip`, the package files can be freely edited in place without re-installing them.
+or
+
+```
+from mypackage import mymod1 as m1
+m1.myfunc()
+```
+
+where `myfunc` is a function defined in `mymod1.py`. (But note `import mypackage` is not sufficient to make `mymod1` available for use -- `mymod1` must be explicitly imported as in either of the two examples above.) If the `-e` (editable) option was used with `pip` as shown above, the package files can be freely edited in place without re-installing them.
 
 For the simple setup discussed here `doc/` would contain an "instruction manual" listing other packages that must be installed for your package to work, while `tests/` would contain some Python programs that could be run to check that it is successfully installed. More sophisticated developers (than me) will know how to set things up so package dependencies are automatically installed and tests are automatically run.
 
-**Naming things.** In the example shown above, there are three different names for your work: `myrepo`, `mypackage`, and `mypackagename`. In practice these are often all the same; they are different in the example to explain how they get used:
+**Naming things - finer points.**  No need to read these if you follow the example above:
 
-- `mypackage` in the example is **the name of a directory containing Python modules (`.py` files)** -- this is what Python considers to be a "package" and this is **what you use in Python `import` statements**.
+- Even if there is only one Python module rather than two as shown above, it cannot be called `mypackage.py` -- the Python import system would not be able to find the module contents because the module name would collide with the package name.
 
-- `mypackagename` in the example is **the value of the argument `name` to `setuptools.setup`**. This is **the name under which Pip will install your package**.  It is logical (and simplest) to make this the same as the import name of your package -- in other words to write `setup(name='mypackage...)` unlike the example above.  If you publish your package on [PyPi](https://pypi.org/), this Pip name will need to be different from the names of all other published packages.
-
-- `myrepo` in the example is the **name of your GH repo**.  As with the Pip name, you may want to make your repo name the same as the import name `mypackage`, so you and others can find your repo on GH.  A fine point:
+- The name `mypackage` is used three places above, and if you like you can use three different names in these places -- but I think there are advantages to using the same name all three places:
   
-  - In the example, the Python packages were put in the subdirectory `src` (which is one of the standard places to put them) and `setup(package_dir = {'':'src'},...)` tells `setup` to look there to find your packages.
+  - The top directory`mypackage` in the example is the **name of your GH repo**. If your GH repo is public, someone could search for it using this name.
   
-  - You can also put your package directories like `mypackage` directly in the top directory, rather than other `src`.  But if you do this and you call your repo `mypackage` (rather than `myrepo` as in the example), then you will find yourself doing things like
+  - The directory `mypackage ` that contains the Python modules (`.py` files) is what Python considers to be a "package" and this is **what you use in Python`import` statements**. This must agree with the `packages=['mypackage']` argument in the `setup` call in `setup.py`.
+  
+  - The  `name='mypackage'` argument in the `setup` call in `setup.py` is **the name under which Pip will install your package**. After installing, if you do `pip list` you will see your package under this name.
+    
+    - If you publish your package on [PyPi](https://pypi.org/), this Pip name will need to be different from the names of all other packages published to PyPi. Also (unlike Conda) PyPi is case-insensitive which sometimes forces people to use a different package name for PyPi.
+  
+  - In the example, the Python packages were put in the subdirectory `src` (which is one of the standard places to put source code) and `setup(package_dir = {'':'src'},...)` tells `setup` to look there to find your packages. You can also put your package directories like `mypackage` directly in the top directory, rather than other `src`.  But if you do this (and use the same names for your GH repo and your Python package as in the example), then you will find yourself doing things like
     
     ```
     somewhere/mypackage/mypackage$ vim mymod1.py   # edit a module
     ```
     
-    I think directly repeated subdirectories in a path like this are confusing and irritating, but you may not mind.   If you put your packages under `src` (better, I think) this becomes
+    I think directly repeated subdirectories in a path like this are confusing and irritating, but you may not mind.   If you put your packages under `src` this becomes (better, I think)
     
     ```
     somewhere/mypackage/src/mypackage$ vim mymod1.py
     ```
     
-    Now, whenever you see `src` in the path you know you are dealing with your package files.
+    Now, whenever you see `src` in the path you know you are dealing with your Python code.
 
 **Using your package in Google Colab.** If your repo (including its history) is not too big, one fairly painless way to use it in a Colab notebook is to clone it into the Colab runtime.  This cell will need to be run whenever you get a new Colab runtime:
 
@@ -1305,7 +1334,5 @@ If you have given your repo the same name as your package the import will look l
 **Things not discussed** (because beyond my expertise).
 
 - The example above was copied and simplified from [this article](https://docs.python-guide.org/writing/structure/) which discusses lots of stuff I don't know about like pip requirements files, Makefile's and automatic test suites.
-
-- There seems to be a newer way of doing things using [Poetry](https://python-poetry.org/) to manage package dependency (rather than Conda) and a file called [pyproject.toml](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) to control the setup process.
 
 - Rather than simply having your package available for download from your GH repo, you could **publish it** on [PyPi](https://pypi.org/) or one of the [registries that GH lists](https://github.com/doncandela/gs-git/packages).
