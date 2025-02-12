@@ -1,6 +1,6 @@
 # Getting started with Git and GitHub
 
-D. Candela 1/17/25
+D. Candela 2/12/25
 
 - [Introduction](#intro)
   - [What is this?](#whatis)
@@ -33,6 +33,8 @@ D. Candela 1/17/25
   - [Small groups with differing roles](#differing)
   - [Appendix A: Markdown](#markdown)
   - [Appendix B: Using GH to develop and distribute a simple Python package](#pythonpackage)
+  - [Appendix C: Using GH on an HPC cluster](#hpc)
+  - [TODOs in this document](#todos)
 
 ## Introduction <a id="intro"></a>
 
@@ -548,7 +550,11 @@ where `<address>` is the HTTPS or SSH address of your repo copied and pasted fro
 
 - Git commands that don't refer to specific files or directories will have the same result if issued in the top directory of your repo, or in any of its sub- or sub-sub directories.  These include `git branch -vv`, `git fetch`, `git pull` (all covered below) and many others.
 
-- `git add .` (covered below) will stage all files **in the current directory and its subdirectories**.
+- `git add .` (covered below) will stage all files **in the current directory and its subdirectories**.  If you copy a lot of files into the local repo:
+  
+  - **Before doing `git add .`** make sure your repo includes a **`.gitignore`** file and edit it to list the types of files you do not want to version control on GH, for example Python byte-code (`.pyc`) files.
+  
+  - If you do end up with files you don't want in your repo (e.g. forgot to exclude with `.gitignore`), you must use `git rm` (described below) to permanently exclude them.
 
 - `git status` (covered below) will show the status of all files in the repo, no matter where it is issued. Conversely `git status .` will show the status of files in the current directory and its subdirectories. 
 
@@ -1336,3 +1342,41 @@ If you have given your repo the same name as your package the import will look l
 - The example above was copied and simplified from [this article](https://docs.python-guide.org/writing/structure/) which discusses lots of stuff I don't know about like pip requirements files, Makefile's and automatic test suites.
 
 - Rather than simply having your package available for download from your GH repo, you could **publish it** on [PyPi](https://pypi.org/) or one of the [registries that GH lists](https://github.com/doncandela/gs-git/packages).
+
+## Appendix C: Using GH on an HPC cluster<a id="hpc"></a>
+
+(This entire section to be researched and written)
+
+The information here was researched for a particular HPC cluster running Slurm, the [Unity Cluster](https://unity.rc.umass.edu/) available to researchers at UMass, Amherst.
+Policies on using GH will likely be different on other HPC clusters.
+
+- **Cloning a public GH repo.** On Unity, it seems that a public GH repo can be freely cloned to storage on the cluster, using the repo's HTTPS address. TODOs: Check if true; can do from login and compute nodes?; give example.  Also note that since Git is already installed on cluster, not necessary for user to have a GH account or install Git anywhere to do this.
+
+- **Cloning a private GH repo.** Not sure yet if this can be done on Unity.  Here is a [website showing how this can be done on an HPC cluster at U of Wisconsin](https://chtc.cs.wisc.edu/uw-research-computing/github-remote-access).
+
+## TODOs in this document<a id="todos"></a>
+
+- General:
+  
+  - **TODO Proofing and wordiness reduction.**
+
+- By section:
+  
+  - [Using pull requests with work done locally](#useprs)
+    
+    - **Pull again** to merge the retrieved remote state into the corresponding local branches. **TODO - SOMETIMES SEEMS DONE AUTOMATICALLY??**
+  
+  - [3. A collaborative workflow: Feature branches and pull requests](#feature)
+    
+    - This is called **publishing the feature branch** (on GHDT, for example) as it makes it visible and available for pulling, pushing, and merging to you and the rest of the collaborators. As shown here the branch to be pushed must be specifically given (or use `git push --all origin` to push all local branches). The intent is that a collaborator's feature branch will not be published to GH until they intentionally do so. **TODO - set to track remote branch?? happens automatically?**   
+    - If the collaborator wants to push your branch `feat23` to GH when it is very incomplete e.g. just to back it up, they could push it but hold off opening a PR until it is closer to finished. But all collaborators will see and be able to edit the branch as soon as it is pushed. It's probably better to open the PR right away as **draft PR**, which is an option under the "Create pull request" tab, and/or to start the description with WIP (work in progress) or something similar. (For free GH accounts, draft PRs are only available for public repos.) Draft PRs cannot be merged until they are marked "Ready for review", and then a collaborator assigned as a reviewer will need to submit an approving review (this is done under the "Files changed" tab of the PR). **TODO always true, or just because I set this?**  
+    - Working on a PR before it is merged.  
+      - Other collaborators work on the feature branch **TODO how do others and pusher track the new branch on GH?**
+      - Merging a PR **TODO write or is this section needed?**
+  
+  - [Appendix A: Markdown](#markdown)
+    
+    - Generating documentation for your project. **TODO Could write this section -- maybe too much for this handout?**
+    - **TODO Perhaps show manual TOC generation, mention auto toc apps exist.**
+  
+  - [Appendix C: Using GH on an HPC cluster](#hpc) **TODO This entire section to be researched and written.**
