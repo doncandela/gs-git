@@ -1,6 +1,6 @@
 # Getting started with Git and GitHub
 
-D. Candela 2/12/25
+D. Candela 4/29/25
 
 - [Introduction](#intro)
   - [What is this?](#whatis)
@@ -34,7 +34,7 @@ D. Candela 2/12/25
   - [Appendix A: Markdown](#markdown)
   - [Appendix B: Using GH to develop and distribute a simple Python package](#pythonpackage)
   - [Appendix C: Using GH on an HPC cluster](#hpc)
-  - [TODOs in this document](#todos)
+- [TODOs in this document](#todos)
 
 ## Introduction <a id="intro"></a>
 
@@ -1345,14 +1345,69 @@ If you have given your repo the same name as your package the import will look l
 
 ## Appendix C: Using GH on an HPC cluster<a id="hpc"></a>
 
-(This entire section to be researched and written)
+The information here was researched for a particular HPC cluster running Slurm, the [Unity Cluster](https://unity.rc.umass.edu/) available to researchers at UMass, Amherst. Policies on using GH will likely be different on other HPC clusters.  Here is a [website showing GH can be accessed on an HPC cluster at U of Wisconsin](https://chtc.cs.wisc.edu/uw-research-computing/github-remote-access).
 
-The information here was researched for a particular HPC cluster running Slurm, the [Unity Cluster](https://unity.rc.umass.edu/) available to researchers at UMass, Amherst.
-Policies on using GH will likely be different on other HPC clusters.
+ In this section `<user>..$` denotes input to a shell on the PC, while `<userc>..$` denotes input to a shell on Unity -- I have only tried the commands shown here on a Unity login node, but they might also work on a compute node. On Unity, at least, Git is installed and can be used without loading any modules:
 
-- **Cloning a public GH repo.** On Unity, it seems that a public GH repo can be freely cloned to storage on the cluster, using the repo's HTTPS address. TODOs: Check if true; can do from login and compute nodes?; give example.  Also note that since Git is already installed on cluster, not necessary for user to have a GH account or install Git anywhere to do this.
+```
+<user>.. $ ssh unity           # ssh into the HPC cluster
+<userc>..$ git --version
+git version 2.43.0
+```
 
-- **Cloning a private GH repo.** Not sure yet if this can be done on Unity.  Here is a [website showing how this can be done on an HPC cluster at U of Wisconsin](https://chtc.cs.wisc.edu/uw-research-computing/github-remote-access).
+- **Cloning repos from GitHub (GH).** As of 2/25 I didn't see information about this in the [Unity docs](https://docs.unity.rc.umass.edu/documentation/), but this was figured out by consulting with someone at Unity help and looking at at [this webpage](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/using-ssh-agent-forwarding) from GitHub.
+  
+  - **Cloning from public GH repo.** This can be done with no special setup by using the `git clone` command on Unity with the HTTPS address of the repo, available in the **`<> Code`** tab of the GH page for the repo. For example, to clone the public repo `doncandela/dcfuncs` into a directory `foo` under `/work/pi_<userc>` do
+    
+    ```
+    <userc>..foo$ git clone https://github.com/doncandela/dcfuncs.git
+    ```
+    
+    This command resulted in the creation on Unity of the subdirectory `foo/dcfuncs`, containing this GH repo including its `.git` file (which is managed by Git and holds the repo history).
+  
+  - **Cloning from private GH repo.** It's assumed here this a private repo to which you have SS access -- for example a repo that belongs to you.  The steps to set up SSH access to GH are [given above](#installgit). It seemed that the easiest way was to use **SSH agent forwarding**, which allows Unity (while you are logged in) to use the SSH keys from your PC to authenticate to GH. First check that you have SSH access to GH from your PC:
+    
+    ```
+    <user>..$ ssh -T git@github.com
+    Hi doncandela! You've successfully authenticated, but GitHub does not provide shell access.
+    ```
+    
+    Still on the PC, edit (or create) the file `~/.ssh/config` to enable SSH agent forwarding. From previously setting up SSH access to GH I found that this file was present on my PCs with a block for Unity, to which I added the last line shown here:
+    
+    ```
+    Host unity
+         HostName unity.rc.umass.edu
+         User candela_umass_edu                  # will be your Unity username <userc>
+         IdentityFile ~/.ssh/2025-01-unity.key   # will be your SSH key file for Unity
+         ForwardAgent yes                        # this is the new line added
+    ```
+    
+    It will be necessary to do this on **every PC** that you will use to SSH into Unity and then tell Unity to clone from GH, and you will need to disconnect form Unity and SSH into it again for this to take effect.
+    
+    After you do this you will be able do the same check on Unity as was done on the PC that you have SSH access to GH:
+    
+    ```
+    <userc>..$ ssh -T git@github.com
+    Hi doncandela! You've successfully authenticated, but GitHub does not provide shell access.
+    ```
+    
+    However, the *first* time you try to access GH from your Unity account you will need to answer `yes` to a multiline message like this:
+    
+    ```
+    <userc>..$ ssh -T git@github.com
+    The authenticity of host 'github.com (140.82.114.3)' can't be established.
+    ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+    This key is not known by any other names.
+    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    ```
+    
+    Now, on Unity you can clone a private GH repo you have access to like `doncandela/dem21` by using the repo's SSH address (also available the **`<> Code`** tab of the GH page for the repo):
+    
+    ```
+    <userc>..foo$ git clone git@github.com:doncandela/dem21.git
+    ```
+    
+    This creates the subdirectory `foo/dem21` on Unity with a clone of the repo.
 
 ## TODOs in this document<a id="todos"></a>
 
@@ -1374,9 +1429,11 @@ Policies on using GH will likely be different on other HPC clusters.
       - Other collaborators work on the feature branch **TODO how do others and pusher track the new branch on GH?**
       - Merging a PR **TODO write or is this section needed?**
   
+  - [Small groups with differing roles](#differing)
+    Workflow to take a project from completely private, to shared with group, to public  (info already there?).
+  
   - [Appendix A: Markdown](#markdown)
     
     - Generating documentation for your project. **TODO Could write this section -- maybe too much for this handout?**
+    
     - **TODO Perhaps show manual TOC generation, mention auto toc apps exist.**
-  
-  - [Appendix C: Using GH on an HPC cluster](#hpc) **TODO This entire section to be researched and written.**
