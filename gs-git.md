@@ -1,6 +1,6 @@
 # Getting started with Git and GitHub
 
-D. Candela 4/29/25
+D. Candela 5/1/25
 
 - [Introduction](#intro)
   - [What is this?](#whatis)
@@ -655,7 +655,13 @@ This is the workflow you might use for a repo you own with no other collaborator
   
       $ git rm <file>
   
-  Simply doing `rm <file>` will delete the file but will not stage this change to be committed.  (If commits were done that included this file, then even after using the `git rm` command and committing these earlier versions of the file can still be retrieved by checking out those earlier commits.)
+  Simply doing `rm <file>` will delete the file but will not stage this change to be committed.  (If commits were done that included this file, then even after using the `git rm` command and committing these earlier versions of the file can still be retrieved by checking out those earlier commits.)  Similarly, when you want to **rename** a file the easiest way is to do
+  
+  ```
+  $ git mv <file> <newname>
+  ```
+  
+  although it also works to do `$ mv <file> <newname>` followed by `$ git add <newname>`.
 
 - **Commit changes to the local repo.**
   

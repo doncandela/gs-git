@@ -2330,7 +2330,7 @@ body {
 </head>
 <body>
   <article class="markdown-body"><h1 class="atx" id="getting-started-with-git-and-github">Getting started with Git and GitHub</h1>
-<p>D. Candela 4/29/25</p>
+<p>D. Candela 5/1/25</p>
 <ul>
 <li><a href="#intro">Introduction</a><ul>
 <li><a href="#whatis">What is this?</a></li>
@@ -2920,7 +2920,9 @@ $ git restore --staged .           # unstage all files</code></pre>
 <p><strong>Note:</strong> If you edit files after staging them, you will need to run <code>git add</code> again to capture the new edits.</p>
 <p>To <strong>delete</strong> a file, stage it for removal from repo, and stop tracking it do</p>
 <pre><code class="indented-code-block">$ git rm &lt;file&gt;</code></pre>
-<p>Simply doing <code>rm &lt;file&gt;</code> will delete the file but will not stage this change to be committed.  (If commits were done that included this file, then even after using the <code>git rm</code> command and committing these earlier versions of the file can still be retrieved by checking out those earlier commits.)</p>
+<p>Simply doing <code>rm &lt;file&gt;</code> will delete the file but will not stage this change to be committed.  (If commits were done that included this file, then even after using the <code>git rm</code> command and committing these earlier versions of the file can still be retrieved by checking out those earlier commits.)  Similarly, when you want to <strong>rename</strong> a file the easiest way is to do</p>
+<pre><code class="fenced-code-block">$ git mv &lt;file&gt; &lt;newname&gt;</code></pre>
+<p>although it also works to do <code>$ mv &lt;file&gt; &lt;newname&gt;</code> followed by <code>$ git add &lt;newname&gt;</code>.</p>
 </li>
 <li><p><strong>Commit changes to the local repo.</strong></p>
 <p>Commit <strong>staged</strong> files (if a <strong>commit message</strong> is not supplied using <code>-m</code> an editor will open to make one):</p>
